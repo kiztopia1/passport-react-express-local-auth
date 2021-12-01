@@ -28,6 +28,16 @@ app.use(
 
 app.use(cookieParser('234kjh32409k23409342u'));
 
+// Routes
+app.post('/login', (req, res) => {
+    console.log(req.body);
+})
+app.post('/register', (req, res) => {
+    console.log(req.body);
+})
+app.get('/user', (req, res) => {
+    console.log(req.body)
+})
 
 app.listen(4000, () => {
     console.log('Server is running')
