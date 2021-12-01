@@ -45,21 +45,30 @@ app.use(cookieParser('234kjh32409k23409342u'));
 app.post('/login', (req, res) => {
     console.log(req.body);
 })
-app.post('/register', async (req, res) => {
+app.post('/register', (req, res) => {
     console.log(req.body)
-    User.getOne({username: req.body.username}, async())
-    const newUser = new User({
-        username: req.body.username,
-        password: req.body.password
-    });
-    await newUser.save();
-    res.send('user created');
-    console.log('create')
+    User.findOne({username: req.body.username}, async(err, doc) => {
+        console.log(err, doc)
+        let hashedPassword = await bcrypt.hash(req.body.password, 10)
+        if(err){
+            throw err
+        }if(doc)res.send('username is taken')
+        if(!doc) {
+            const newUser = new User({
+                username: req.body.username,
+                password: hashedPassword
+            });
+            await newUser.save();
+            res.send('user created');
+            console.log('create')
+        }
+    })
+    
 })
 app.get('/user', (req, res) => {
     console.log(req.body)
 })
 
 app.listen(4000, () => {
-    console.log('Serer is running')
+    console.log('server is running')
 })
