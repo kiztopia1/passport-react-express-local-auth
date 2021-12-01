@@ -13,7 +13,7 @@ function App() {
     Axios({
       method: 'post',
       data: {
-        'userName': regUserName.current.value,
+        'username': regUserName.current.value,
         'password': regPassword.current.value,
       },
       withCredentials: true,
@@ -25,7 +25,7 @@ function App() {
     Axios({
       method: 'post',
       data: {
-        'userName': logUserName.current.value,
+        'username': logUserName.current.value,
         'password': logPassword.current.value,
       },
       withCredentials: true,

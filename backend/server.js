@@ -9,6 +9,19 @@ const session = require('express-session');
 const bodyParse = require('body-parser');
 
 const app = express()
+const User = require('./user.js')
+
+//mongoose config 
+
+mongoose.connect('mongodb+srv://kirubel:1234@cluster0.dakub.mongodb.net/test?retryWrites=true&w=majority',
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    },
+    () => {
+        console.log('db is connected')
+    }
+)
 
 // Middleware
 app.use(bodyParse.json());
@@ -32,13 +45,21 @@ app.use(cookieParser('234kjh32409k23409342u'));
 app.post('/login', (req, res) => {
     console.log(req.body);
 })
-app.post('/register', (req, res) => {
-    console.log(req.body);
+app.post('/register', async (req, res) => {
+    console.log(req.body)
+    User.getOne({username: req.body.username}, async())
+    const newUser = new User({
+        username: req.body.username,
+        password: req.body.password
+    });
+    await newUser.save();
+    res.send('user created');
+    console.log('create')
 })
 app.get('/user', (req, res) => {
     console.log(req.body)
 })
 
 app.listen(4000, () => {
-    console.log('Server is running')
+    console.log('Serer is running')
 })
