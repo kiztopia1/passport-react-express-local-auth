@@ -31,6 +31,10 @@ app.use(cors({
     credentials: true
 }))
 
+app.use(passport.initialize());
+app.use(passport.session());
+require('./passportConfig')(passport);
+
 app.use(
     session({
         secret: '234kjh32409k23409342u',
@@ -42,9 +46,18 @@ app.use(
 app.use(cookieParser('234kjh32409k23409342u'));
 
 // Routes
-app.post('/login', (req, res) => {
-    console.log(req.body);
-})
+app.post('/login', (req, res, next) => {
+    passport.authenticate('local', (err, user, info)=> {
+        if(err) throw err;
+        if(!user) res.send('no user Exist');
+        else {
+            req.logIn(user, err => {
+                if(err) throw err;
+                res.send('Authenticated');
+            })
+        }
+    })(req,res,next);
+});
 app.post('/register', (req, res) => {
     console.log(req.body)
     User.findOne({username: req.body.username}, async(err, doc) => {
@@ -66,7 +79,7 @@ app.post('/register', (req, res) => {
     
 })
 app.get('/user', (req, res) => {
-    console.log(req.body)
+    res.send(req.user);
 })
 
 app.listen(4000, () => {
